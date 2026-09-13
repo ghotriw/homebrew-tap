@@ -7,7 +7,7 @@ cask "kawa-modern" do
   desc "Modern macOS input source switcher with user-defined shortcuts"
   homepage "https://github.com/ghotriw/kawa-modern"
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "Kawa Modern.app"
 
