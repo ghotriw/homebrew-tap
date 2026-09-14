@@ -1,6 +1,6 @@
 cask "kawa-modern" do
-  version "2.0.2"
-  sha256 "81ad29b943dd7d809dec8602e0ed945b1f1de784bc1b6bab3a489c3ea805c321"
+  version "2.0.3"
+  sha256 "892efbcf1f63ad3651063df8535320c0fac313d5de035a6aebceb82bb74b28e4"
 
   url "https://github.com/ghotriw/kawa-modern/releases/download/v#{version}/Kawa-Modern.zip"
   name "Kawa Modern"
