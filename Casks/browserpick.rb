@@ -1,6 +1,6 @@
 cask "browserpick" do
-  version "0.0.7.1"
-  sha256 "52d71b6389967a85aee847885082eadb400a87d3dfa5ff27e160b92fc1c1113c"
+  version "0.0.8"
+  sha256 "065fc2ef5da537d79a60a761d5b0f1a54eb9ae59947b01115947a449e990a7c9"
 
   url "https://github.com/ghotriw/browser-pick/releases/download/v#{version}/BrowserPick.zip"
   name "BrowserPick"
