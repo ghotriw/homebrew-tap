@@ -1,6 +1,6 @@
 cask "nits" do
-  version "0.15.3"
-  sha256 "434acaae3dba1cf7effbc3f35679dc297f8ecd29ccfa06be361695e4c2f55211"
+  version "0.15.4"
+  sha256 "deb394a423e7ed4b905c8bcb975dac1a815b44c4795e135fbf8bff6ad9115154"
 
   url "https://github.com/ghotriw/nits/releases/download/v#{version}/Nits-#{version}-macos-arm64.zip"
   name "Nits"
