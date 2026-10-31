@@ -1,0 +1,59 @@
+name: Bump casks
+
+# Follows the latest (non-prerelease) GitHub release of each app and updates its cask.
+# Needs no secrets: the source repos are public and the commit uses this repo's GITHUB_TOKEN.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bump-casks
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update casks
+        run: |
+          set -euo pipefail
+          # cask file | source repo | release asset name with VERSION in place of the version
+          apps=(
+            "nits|ghotriw/nits|Nits-VERSION-macos-arm64.zip"
+            "browserpick|ghotriw/browser-pick|BrowserPick.zip"
+            "kawa-modern|ghotriw/kawa-modern|Kawa-Modern.zip"
+          )
+          for app in "${apps[@]}"; do
+            IFS='|' read -r cask repo pattern <<< "$app"
+            file="Casks/$cask.rb"
+            tag="$(gh api "repos/$repo/releases/latest" --jq .tag_name)"
+            version="${tag#v}"
+            current="$(sed -nE 's/^[[:space:]]*version "([^"]*)".*/\1/p' "$file")"
+            if [[ "$version" == "$current" ]]; then
+              echo "$cask is up to date ($current)"
+              continue
+            fi
+            asset="${pattern//VERSION/$version}"
+            sha="$(curl -fsSL "https://github.com/$repo/releases/download/$tag/$asset.sha256" | awk '{print $1}')"
+            [[ "$sha" =~ ^[0-9a-f]{64}$ ]] || { echo "bad sha256 for $asset: '$sha'"; exit 1; }
+            sed -i -E \
+              -e "s/^([[:space:]]*version )\"[^\"]*\"/\1\"$version\"/" \
+              -e "s/^([[:space:]]*sha256 ).*/\1\"$sha\"/" \
+              "$file"
+            echo "$cask: $current -> $version"
+          done
+
+      - name: Commit
+        run: |
+          git diff --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "Bump casks"
+          git push

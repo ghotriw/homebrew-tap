@@ -11,6 +11,11 @@ cask "browserpick" do
 
   app "BrowserPick.app"
 
+  postflight do
+    system_command "/usr/bin/xattr",
+                   args: ["-dr", "com.apple.quarantine", "#{appdir}/BrowserPick.app"]
+  end
+
   zap trash: [
     "~/Library/Preferences/com.cvladan.BrowserPick.plist",
   ]
