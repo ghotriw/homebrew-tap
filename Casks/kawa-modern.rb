@@ -11,9 +11,8 @@ cask "kawa-modern" do
 
   app "Kawa Modern.app"
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/Kawa Modern.app"]
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Kawa Modern.app"]
   end
 
   zap trash: [

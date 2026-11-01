@@ -13,9 +13,8 @@ cask "nits" do
   app "Nits.app"
 
   # The app is ad-hoc signed, not notarized: drop the quarantine flag so it opens right away.
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/Nits.app"]
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Nits.app"]
   end
 
   zap trash: [
