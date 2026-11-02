@@ -33,7 +33,9 @@ jobs:
           for app in "${apps[@]}"; do
             IFS='|' read -r cask repo pattern <<< "$app"
             file="Casks/$cask.rb"
-            tag="$(gh api "repos/$repo/releases/latest" --jq .tag_name)"
+            # not releases/latest: some repos also publish non-app releases (e.g. deps-v*)
+            tag="$(gh api "repos/$repo/releases?per_page=30" --jq '[.[] | select(.draft|not) | select(.prerelease|not) | select(.tag_name|test("^v[0-9]"))][0].tag_name')"
+            [[ -n "$tag" && "$tag" != "null" ]] || { echo "no v* release found for $repo"; exit 1; }
             version="${tag#v}"
             current="$(sed -nE 's/^[[:space:]]*version "([^"]*)".*/\1/p' "$file")"
             if [[ "$version" == "$current" ]]; then
